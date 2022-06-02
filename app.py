@@ -8,6 +8,7 @@ import os
 
 load_dotenv()
 
+database_url = "postgresql:" + ":".join(os.environ.get('DATABASE_URL', "").split(":")[1:])
 app = Flask(__name__)
 basedir = os.path.abspath(os.path.dirname(__file__))
 db = SQLAlchemy(app)
@@ -174,19 +175,19 @@ def get_cart_items():
     return jsonify(multiple_cart_schema.dump(items))
 
 
-# @app.route('/cart/get/<id>', methods=["GET"])
-# def get_cart_item_by_id(id):
-#     item = db.session.query(Cart).filter(Cart.id == id).first()
-#     return jsonify(cart_schema.dump(item))
+@app.route('/cart/get/<id>', methods=["GET"])
+def get_cart_item_by_id(id):
+    item = db.session.query(Cart).filter(Cart.id == id).first()
+    return jsonify(cart_schema.dump(item))
 
 
-# @app.route('/cart/delete/<id>', methods=["DELETE"])
-# def delete_cart_item_by_id(id):
-#     item = db.session.query(Cart).filter(Cart.id == id).first()
-#     db.session.delete(item)
-#     db.session.commit()
+@app.route('/cart/delete/<id>', methods=["DELETE"])
+def delete_cart_item_by_id(id):
+    item = db.session.query(Cart).filter(Cart.id == id).first()
+    db.session.delete(item)
+    db.session.commit()
 
-#     return jsonify("The cart item has been deleted")
+    return jsonify("The cart item has been deleted")
 
 
 @app.route('/cart/delete', methods=['DELETE'])
